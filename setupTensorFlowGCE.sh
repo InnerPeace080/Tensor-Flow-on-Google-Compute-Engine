@@ -37,11 +37,17 @@ sudo apt-get install oracle-java8-installer
 # Install Bazel dep.
 ################################################################################
 echo -e "\e[36m***Installing Bazel*** \e[0m"
-wget https://goo.gl/OQ2ZCl -O bazel-installer-linux-x86_64.sh
-chmod +x bazel-installer-linux-x86_64.sh
-sudo ./bazel-installer-linux-x86_64.sh
-rm bazel-installer-linux-x86_64.sh
-sudo chown $USER:$USER ~/.cache/bazel/
+
+echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
+curl https://bazel.build/bazel-release.pub.gpg | sudo apt-key add -
+
+sudo apt-get update && sudo apt-get install bazel
+sudo apt-get upgrade bazel
+# wget https://goo.gl/OQ2ZCl -O bazel-installer-linux-x86_64.sh
+# chmod +x bazel-installer-linux-x86_64.sh
+# sudo ./bazel-installer-linux-x86_64.sh
+# rm bazel-installer-linux-x86_64.sh
+# sudo chown $USER:$USER ~/.cache/bazel/
 
 ################################################################################
 # Fetch Swig and Python deps.
@@ -74,7 +80,7 @@ sudo apt-get install python2.7
 ################################################################################
 echo -e "\e[36m***Cloning TensorFlow from GitHub*** \e[0m"
 git clone --recurse-submodules -b r1.1 https://github.com/tensorflow/tensorflow.git
-sed -i 's/kDefaultTotalBytesLimit = 64/kDefaultTotalBytesLimit = 128/' tensorflow/google/protobuf/src/google/protobuf/io/coded_stream.h
+# sed -i 's/kDefaultTotalBytesLimit = 64/kDefaultTotalBytesLimit = 128/' tensorflow/google/protobuf/src/google/protobuf/io/coded_stream.h
 
 ################################################################################
 # We need Numpy for this Tensor flow to work.
