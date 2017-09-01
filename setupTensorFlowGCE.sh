@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# This script will hopefully save you a lot of time setting up GCE 
+# This script will hopefully save you a lot of time setting up GCE
 # (Google Compute Engine) to be ready to run TensorFlow.
 #
 # Tested using the following environment:
@@ -56,22 +56,24 @@ libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev
 # Fetch and install Python.
 ################################################################################
 echo -e "\e[36m***Installing Python*** \e[0m"
-wget https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz
-tar -xvf Python-3.5.1.tgz
-cd Python-3.5.1
-./configure
-make
-sudo make install
-cd ../
-rm Python-3.5.1.tgz
-sudo echo "alias python=python3.5" >> ~/.bashrc
-source ~/.bashrc
+sudo apt-get install python2.7
+
+# wget https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz
+# tar -xvf Python-3.5.1.tgz
+# cd Python-3.5.1
+# ./configure
+# make
+# sudo make install
+# cd ../
+# rm Python-3.5.1.tgz
+# sudo echo "alias python=python3.5" >> ~/.bashrc
+# source ~/.bashrc
 
 ################################################################################
 # Grab v0.8 TensorFlow from git.
 ################################################################################
 echo -e "\e[36m***Cloning TensorFlow from GitHub*** \e[0m"
-git clone --recurse-submodules -b r0.8 https://github.com/tensorflow/tensorflow.git
+git clone --recurse-submodules -b r1.1 https://github.com/tensorflow/tensorflow.git
 sed -i 's/kDefaultTotalBytesLimit = 64/kDefaultTotalBytesLimit = 128/' tensorflow/google/protobuf/src/google/protobuf/io/coded_stream.h
 
 ################################################################################
@@ -84,24 +86,24 @@ sudo pip install numpy --upgrade
 ################################################################################
 # GCE has no swap, prevent trying to use one else out of virtual memory error.
 ################################################################################
-echo -e "\e[36m***Changing swappiness*** \e[0m"
-sudo sysctl vm.swappiness=0
-# Make change persistent even after reboot.
-cp /etc/sysctl.conf /tmp/
-echo "vm.swappiness=0" >> /tmp/sysctl.conf
-sudo cp /tmp/sysctl.conf /etc/
+# echo -e "\e[36m***Changing swappiness*** \e[0m"
+# sudo sysctl vm.swappiness=0
+# # Make change persistent even after reboot.
+# cp /etc/sysctl.conf /tmp/
+# echo "vm.swappiness=0" >> /tmp/sysctl.conf
+# sudo cp /tmp/sysctl.conf /etc/
 
 ################################################################################
 # Make a swap which is used only if RAM not available.
 ################################################################################
-echo -e "\e[36m***Creating swap file*** \e[0m"
-sudo touch /var/swap.img
-sudo chmod 600 /var/swap.img
-# Create approx 4GB swap assuming 3.6GB RAM (almost 8GB total space available)
-sudo dd if=/dev/zero of=/var/swap.img bs=1024k count=4000
-sudo mkswap /var/swap.img
-sudo swapon /var/swap.img
-free
+# echo -e "\e[36m***Creating swap file*** \e[0m"
+# sudo touch /var/swap.img
+# sudo chmod 600 /var/swap.img
+# # Create approx 4GB swap assuming 3.6GB RAM (almost 8GB total space available)
+# sudo dd if=/dev/zero of=/var/swap.img bs=1024k count=4000
+# sudo mkswap /var/swap.img
+# sudo swapon /var/swap.img
+# free
 echo -e "\e[36mReady to run TensorFlow! \e[0m"
 
 ################################################################################
